@@ -4,7 +4,7 @@ LIBVER = 1
 LIBDIR ?= /usr/lib
 INCLUDEDIR = /usr/include/vz
 
-CFLAGS = -Wall -O0 -fPIC  -g -m32
+CFLAGS = -Wall -O0 -fPIC -g
 INC = -I/usr/include -I../include
 LIB_vzevent = libvzevent.so.${LIBVER}
 TARGET = $(LIB_vzevent) libvzevent.a
