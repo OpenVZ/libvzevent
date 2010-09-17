@@ -2,7 +2,7 @@ CC = gcc
 
 CFLAGS = -Wall -O0 -g
 INC = -I/usr/include -I../include
-LIBS = ../src/libvzevent.a
+LIBS = ../src/libvzevent.a -lpthread
 
 TARGET=test
 OBJS = test.o
@@ -16,6 +16,6 @@ test: ${OBJS}
 	$(CC) $(CFLAGS) $(INC) $(LDFLAGS) $^ ${LIBS} -o $@ 
 
 clean:
-	rm -f ${BJS} ${TARGET}
+	rm -f ${OBJS} ${TARGET}
 
 .PHONY: all clean

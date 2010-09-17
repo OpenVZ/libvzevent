@@ -18,7 +18,7 @@ all: ${TARGET}
 	$(CC) $(CFLAGS) $(INC) -c $< -o $@
 
 $(LIB_vzevent): ${OBJS}
-	$(CC) $(CFLAGS) $(INC) $(LDFLAGS) -shared $^ -o $@ 
+	$(CC) $(CFLAGS) $(INC) $(LDFLAGS) -shared -lpthread $^ -o $@ 
 
 libvzevent.a: ${OBJS}
 	ar rucs $@ $^
