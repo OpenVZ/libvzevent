@@ -3,6 +3,7 @@ LIBVER = 1
 
 LIBDIR ?= /usr/lib
 INCLUDEDIR = /usr/include/vz
+VZEVENT_DIR = /var/run/vzevents
 
 CFLAGS = -Wall -O0 -fPIC -g
 INC = -I/usr/include -I../include
@@ -28,6 +29,7 @@ libvzevent.a: ${OBJS}
 install: $(LIB_vzevent)
 	install -d $(DESTDIR)/$(LIBDIR)
 	install -d $(DESTDIR)/$(INCLUDEDIR)
+	install -d $(DESTDIR)/$(VZEVENT_DIR)
 	install -m 644 ../include/vzevent.h $(DESTDIR)/$(INCLUDEDIR)
 	install -s -m 644 $(LIB_vzevent) $(DESTDIR)/$(LIBDIR)
 	install -m 644 libvzevent.a $(DESTDIR)/$(LIBDIR)
