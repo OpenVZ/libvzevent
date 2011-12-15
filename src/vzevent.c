@@ -161,7 +161,9 @@ static int vzevt_send_evt(vzevt_handle_t *h, vzevt_t *evt)
 		return vzevt_err(VZEVT_ERR_INVAL,
 				"evt_send: incorrect event size: %d",
 				evt->size);
-
+	// no listeners
+	if (stat(g_evt_dir, &st) != 0)
+		return 0;
 	/* get registered unix sockets list from g_evt_dir directory... */
 	dh = opendir(g_evt_dir);
 	if (!dh)
