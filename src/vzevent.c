@@ -93,23 +93,39 @@ static int open_sock(const char *sname)
 			res = bind(s, (struct sockaddr *)&addr, SUN_LEN(&addr));
 		}
 	}
-
-	if (res == 0) {
-		res = fcntl(s, F_SETFL, O_NONBLOCK);
-		if (res == -1) {
-			vzevt_err(VZEVT_ERR_FATAL,
-					"Can't set socket to non-blocked mode: %s",
-					strerror(errno));
-			close(s); s = -1;
-		}
-	} else {
+	if (res == -1) {
 		vzevt_err(VZEVT_ERR_FATAL,
-			"Can't create/open socket to read events: %s",
+				"Failed to bind to socket %s: %s",
+				sname, strerror(errno));
+		goto err;
+	}
+
+	res = fcntl(s, F_GETFL);
+	if (res >= 0)
+		res = fcntl(s, F_SETFL, res | O_NONBLOCK);
+	if (res == -1) {
+		vzevt_err(VZEVT_ERR_FATAL,
+				"Can't set socket to non-blocked mode: %s",
 				strerror(errno));
-		close(s); s = -1;
+		goto err;
+	}
+
+	res = fcntl(s, F_GETFD);
+	if (res >= 0)
+		res = fcntl(s, F_SETFD, res | FD_CLOEXEC);
+
+	if (res == -1) {
+		vzevt_err(VZEVT_ERR_FATAL,
+				"Can't set FD_CLOEXEC: %s",
+				strerror(errno));
+		goto err;
 	}
 
 	return s;
+
+err:
+	close(s);
+	return -1;
 }
 
 int vzevt_register(vzevt_handle_t **h)
