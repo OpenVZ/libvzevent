@@ -1,13 +1,20 @@
 CC = gcc
-LIBVER = 1
+LIBVER ?= 1
+LIBVER_MINOR ?= 0
 
+ARCH=$(shell uname -i)
+ifeq "${ARCH}" "x86_64"
+LIBDIR ?= /usr/lib64
+else
 LIBDIR ?= /usr/lib
+endif
+
 INCLUDEDIR = /usr/include/vz
 VZEVENT_DIR = /var/run/vzevents
 
 CFLAGS = -Wall -O0 -fPIC -g
 INC = -I/usr/include -I../include
-LIB_vzevent = libvzevent.so.${LIBVER}
+LIB_vzevent = libvzevent.so.${LIBVER}.${LIBVER_MINOR}
 TARGET = $(LIB_vzevent) libvzevent.a
 
 TARGET = libvzevent.a $(LIB_vzevent)
@@ -34,7 +41,9 @@ install: $(LIB_vzevent)
 	install -s -m 644 $(LIB_vzevent) $(DESTDIR)/$(LIBDIR)
 	install -m 644 libvzevent.a $(DESTDIR)/$(LIBDIR)
 	ln -sf $(LIB_vzevent) libvzevent.so
+	ln -sf $(LIB_vzevent) libvzevent.so.${LIBVER}
 	cp -af libvzevent.so $(DESTDIR)/$(LIBDIR)/
+	cp -af libvzevent.so.${LIBVER} $(DESTDIR)/$(LIBDIR)/
 
 clean:
 	rm -f ${OBJS} ${TARGET}
