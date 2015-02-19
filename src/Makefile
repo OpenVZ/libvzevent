@@ -14,7 +14,8 @@ VZEVENT_DIR = /var/run/vzevents
 
 CFLAGS = -Wall -O0 -fPIC -g
 INC = -I/usr/include -I../include
-LIB_vzevent = libvzevent.so.${LIBVER}.${LIBVER_MINOR}
+LIB_vzevent_major = libvzevent.so.${LIBVER}
+LIB_vzevent = ${LIB_vzevent_major}.${LIBVER_MINOR}
 TARGET = $(LIB_vzevent) libvzevent.a
 
 TARGET = libvzevent.a $(LIB_vzevent)
@@ -27,7 +28,7 @@ all: ${TARGET}
 
 $(LIB_vzevent): ${OBJS}
 	$(CC) $(CFLAGS) $(INC) $(LDFLAGS) -shared -lpthread \
-		-Wl,-soname=$(LIB_vzevent) $^ -o $@ 
+		-Wl,-soname=$(LIB_vzevent_major) $^ -o $@ 
 
 libvzevent.a: ${OBJS}
 	ar rucs $@ $^
@@ -38,7 +39,7 @@ install: $(LIB_vzevent)
 	install -d $(DESTDIR)/$(INCLUDEDIR)
 	install -d $(DESTDIR)/$(VZEVENT_DIR)
 	install -m 644 ../include/vzevent.h $(DESTDIR)/$(INCLUDEDIR)
-	install -s -m 644 $(LIB_vzevent) $(DESTDIR)/$(LIBDIR)
+	install -s -m 755 $(LIB_vzevent) $(DESTDIR)/$(LIBDIR)
 	install -m 644 libvzevent.a $(DESTDIR)/$(LIBDIR)
 	ln -sf $(LIB_vzevent) libvzevent.so
 	ln -sf $(LIB_vzevent) libvzevent.so.${LIBVER}
