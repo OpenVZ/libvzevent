@@ -18,4 +18,7 @@ test: ${OBJS}
 clean:
 	rm -f ${OBJS} ${TARGET}
 
+install:
+
+
 .PHONY: all clean
