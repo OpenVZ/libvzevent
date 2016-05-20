@@ -23,6 +23,8 @@
 #ifndef _VZEVENTS_H_
 #define _VZEVENTS_H_
 
+#include <sys/types.h>
+
 #define EVT_MAX_MESSAGE_SIZE		4000
 
 enum {
@@ -32,10 +34,8 @@ enum {
 
 typedef int sock_t;
 typedef char *str_t;
-typedef unsigned char u8;
-typedef unsigned short u16;
-typedef unsigned int u32;
-typedef unsigned long long u64;
+typedef u_char u8;
+typedef u_int32_t u32;
 
 typedef struct vzevt_handle_s {
 	sock_t sock;
