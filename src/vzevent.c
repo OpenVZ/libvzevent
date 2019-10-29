@@ -224,8 +224,9 @@ static int vzevt_send_evt(vzevt_handle_t *h, vzevt_t *evt)
 		if (h != NULL && strcmp(dp->d_name, h->sock_name) == 0)
 			continue;
 
-		snprintf(addr.sun_path,UNIX_PATH_MAX, "%s/%s",
-			 g_evt_dir, dp->d_name);
+		if (snprintf(addr.sun_path,UNIX_PATH_MAX, "%s/%s",
+				g_evt_dir, dp->d_name) < 0)
+			continue;
 		if (stat(addr.sun_path, &st) != -1 &&
 			S_ISSOCK(st.st_mode))
 		{
