@@ -49,8 +49,8 @@
 
 
 static const char *g_evt_dir = "/var/run/vzevents";
-
-static char *gen_unx_sockname(void);
+static char *s_issuerid = NULL;
+static const char *get_issuerid();
 
 static int create_evt_dir(void)
 {
@@ -76,8 +76,9 @@ static void close_sock(vzevt_handle_t *h)
 		snprintf(path, sizeof(path), "%s/%s",
 				g_evt_dir, h->sock_name);
 		unlink(path);
-		free(h->sock_name);
 		h->sock_name = NULL;
+		free(s_issuerid);
+		s_issuerid = NULL;
 	}
 }
 
@@ -158,7 +159,7 @@ int vzevt_register(vzevt_handle_t **h)
 	bzero(res_h, sizeof(vzevt_handle_t));
 
 	/* generate socket name ... */
-	res_h->sock_name = gen_unx_sockname();
+	res_h->sock_name = get_issuerid();
 	if (!res_h->sock_name) {
 		free(res_h);
 		return vzevt_err(VZEVT_ERR_NOMEM, "nomem");
@@ -221,7 +222,7 @@ static int vzevt_send_evt(vzevt_handle_t *h, vzevt_t *evt)
 		if (strcmp(dp->d_name, "..") == 0 ||
 		    strcmp(dp->d_name, ".") == 0)
 				continue;
-		if (h != NULL && strcmp(dp->d_name, h->sock_name) == 0)
+		if (s_issuerid != NULL && strcmp(dp->d_name, s_issuerid) == 0)
 			continue;
 
 		if (snprintf(addr.sun_path,UNIX_PATH_MAX, "%s/%s",
@@ -381,3 +382,10 @@ static char *gen_unx_sockname(void)
 	return res;
 }
 
+static const char *get_issuerid()
+{
+	if (s_issuerid == NULL)
+		s_issuerid = gen_unx_sockname();
+
+	return s_issuerid;
+}
