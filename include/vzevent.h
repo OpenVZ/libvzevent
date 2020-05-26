@@ -40,7 +40,7 @@ typedef u_int32_t u32;
 
 typedef struct vzevt_handle_s {
 	sock_t sock;
-	str_t sock_name;
+	const char *sock_name;
 } vzevt_handle_t;
 
 typedef struct vzevt_s {
